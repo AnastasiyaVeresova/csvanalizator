@@ -1,0 +1,493 @@
+@charset "UTF-8";
+
+* {
+  margin: 0 auto;
+  font-family: "Roboto", sans-serif;
+}
+
+.roboto {
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings: "width" 100;
+}
+/* Анимация плавного появления */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+/* Анимация изменения цвета */
+@keyframes colorChange {
+  0% {
+      background-color: #f9f9f9;
+  }
+  50% {
+      background-color: #d3d3d3;
+  }
+  100% {
+      background-color: #f9f9f9;
+  }
+}
+/* Стили для контейнера загрузки */
+#loadingContainer, #processMessage {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5) !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  animation: fadeIn 0.5s ease-in-out !important;
+}
+.message-box {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  color: black;
+  border-radius: 10px;
+  text-align: center;
+}
+/* Стили для заголовка второго уровня */
+h2 {
+  text-align: center;
+  margin: 30px 0px 30px 0px;
+}
+h1, h2 {
+  animation: fadeIn 1s ease-in-out;
+}
+/* Стили для таблицы */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  animation: fadeIn 1s ease-in-out;
+}
+/* Стили для заголовков и ячеек таблицы */
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+/* Стили для заголовков таблицы */
+th {
+  background-color: #f2f2f2;
+}
+/* Стили для контейнера отображения таблицы */
+#displaytable {
+  margin-top: 20px;
+}
+/* Стили для таблицы в контейнере отображения */
+#displaytable table {
+  width: 90%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+/* Стили для заголовков и ячеек таблицы в контейнере отображения */
+#displaytable th, #displaytable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+/* Стили для заголовков таблицы в контейнере отображения */
+#displaytable th {
+  background-color: #f2f2f2;
+}
+/* Стили для четных строк таблицы в контейнере отображения */
+#displaytable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+/* Стиль для кнопок в контейнере кнопок на маленьких экранах */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 11px;
+  width: 100%;
+  margin-top: 20px;
+}
+button {
+  padding: 10px 20px;
+  background-color: #1967d2;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.buttons button {
+  flex: 1;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 0px;
+}
+.buttons button:last-child {
+  margin-right: 0;
+}
+.button:hover {
+  background-color: #0793ff;
+}
+.button:active {
+  background-color: #0793ff;
+}
+/* Стили для таблицы аналитики */
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Стили для заголовков и ячеек таблицы аналитики */
+.analytics-table th,
+.analytics-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+/* Стили для заголовков таблицы аналитики */
+.analytics-table th {
+  background-color: #f2f2f2;
+}
+/* Стили для подсказок */
+.hint {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  animation: colorChange 2s infinite;
+}
+/* Стили для модального окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+.close {
+  position: absolute;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  right: 10px;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* Стили для контейнера графиков */
+.chart-container {
+  justify-content: center;
+}
+#chartContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#chartContainer .text {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+#chartContainer canvas {
+  width: 100%;
+  margin: 10px;
+}
+/* Стилизация осей */
+#chartContainer .xtick,
+#chartContainer .ytick {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+}
+/* Стилизация легенды */
+#chartContainer .legend {
+  font-family: Arial, sans-serif;
+  font-size: 50px;
+  color: #333;
+}
+/* Стилизация подписей */
+#chartContainer .annotation {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+#chart,
+#graph {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+/* Графики занимают всю ширину */
+#chart,
+#graph,
+#chartContainer canvas {
+  width: 100%;
+  flex-grow: 1;
+}
+/* Текстовые элементы имеют единообразные стили */
+.modal-content h2,
+.modal-content p,
+.modal-content th,
+.modal-content td,
+.modal-content .hint {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  /* background-color: #fff; */
+}
+.modal-content h2 {
+  font-size: 18px;
+}
+.modal-content p {
+  margin: 10px 0;
+}
+.modal-content th {
+  background-color: #f2f2f2;
+}
+.modal-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.modal-content .hint {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 20px;
+}
+/* Стили для навигации */
+.navigation {
+  position: fixed;
+  top: 25%;
+  right: 10px;
+  background: #447adb;
+  border: 1px solid #ddd;
+  padding: 10px;
+  z-index: 1000;
+}
+.navigation h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+}
+.navigation ul li {
+  margin-bottom: 10px;
+}
+.navigation ul li a {
+  text-decoration: none;
+  color: #ffffff;
+}
+.navigation ul li a:hover {
+  text-decoration: underline;
+}
+.input,
+.select {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+#csvForm {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  align-items: flex-end;
+}
+.form-row input,
+.form-row select {
+  flex: 1;
+  margin-right: 10px;
+  display: flex;
+      flex-direction: column;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 7px 7px 7px 7px;
+}
+.label {
+  display: flex;
+  margin-bottom: 5px;
+}
+h1 {
+  text-align: center;
+  margin: 30px 0px 30px 0px;
+}
+/* Стили для текстового поля с диапазоном */
+.range {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+  overflow: hidden;
+  resize: none;
+}
+/* Стили для поля ввода и кнопки поиска */
+#userInputSection {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 80%;
+}
+#userInputSection h3 {
+  margin-bottom: 20px;
+}
+#userInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+#userInputSection button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+#columns {
+  width: 90%;
+}
+.column {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.column-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.row_number {
+  padding: 8px;
+  background-color: #1967d2;
+  color: white;
+  border: none;
+  display: flex;
+  align-content: center;
+  height: 19px;
+  width: 19px;
+  margin-right: 10px;
+  justify-content: center;
+}
+.column-row input, .column-row select, .column-row textarea {
+  margin-right: 10px;
+  border-radius: 7px 7px 7px 7px;
+}
+.column-row input, .column-row select {
+  flex: 1;
+}
+.row_remove {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  height: 34px;
+  width: 34px;
+}
+.column textarea {
+  width: 100%;
+  margin-top: 10px;
+}
+select {
+  color: #333;
+}
+option, title{
+  color: #333;
+}
+/* Стили для пагинации */
+#pagination__container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  width: 90%;
+  align-items: center;
+}
+#pagination__button {
+  margin: 0 5px;
+}
+.pagination__button {
+  margin: 0 5px;
+}
+.percentage-info {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+}
+/* Адаптивные стили */
+/* Медиа-запросы для адаптивности */
+@media (max-width: 980px) {
+  /* Стиль для элементов ввода, выбора и кнопок в строке формы на маленьких экранах */
+  .form-row input,
+  .form-row select,
+  .form-row button {
+    flex: 1 1 100%;
+    /* Занимает всю доступную ширину */
+  }
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .form-row input,
+  .form-row select {
+    flex: 1 1 100%;
+    margin-right: 0px;
+  } 
+}
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 10px;
+  }
+  .navigation {
+    right: 2px;
+    padding: 5px;
+  }
+  .navigation h3 {
+    font-size: 14px;
+  }
+  .navigation ul li {
+    margin-bottom: 6px;
+  }
+  .navigation ul li a {
+    font-size: 12px;
+  }
+}

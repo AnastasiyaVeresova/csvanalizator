@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор CSV</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Генератор CSV</h1>
+    <form id="csvForm">
+        <div class="form-row">
+            <!-- Поле ввода для количества строк -->
+            <input type="number" id="num_rows" name="num_rows" placeholder="Количество строк" required
+                title="Введите количество строк">
+            <!-- Поле ввода для имени файла -->
+            <input type="text" id="filename" name="filename" placeholder="Имя файла (без расширения)" required
+                title="Введите имя файла">
+            <!-- Выбор типа индексов -->
+            <label for="indexType"></label>
+            <select id="indexType" name="indexType" required>
+                <option value="" disabled selected>Тип индексов</option>
+                <option value="none" selected>Без индексации строк</option>
+                <option value="auto">Автоматические уникальные</option>
+                <option value="custom">Пользовательские с пропусками</option>
+            </select>
+            <!-- Контейнер для пользовательского диапазона индексов -->
+            <div id="customIndexContainer">
+                <label for="customIndexRange"></label>
+                <input type="text" id="customIndexRange" style="display: none;" placeholder="Индексы (от-до)">
+
+            </div>
+        </div>
+        <!-- Контейнер для столбцов -->
+        <div id="columns"></div>
+        <div class="buttons">
+            <!-- Кнопки для управления таблицей -->
+            <button type="button" class="button" onclick="addColumn()" title="Добавить столбец">Добавить столбец</button>
+            <button type="button" class="button" onclick="generateCSV()" title="Создать CSV">Создать CSV</button>
+            <button type="button" class="button" onclick="showAnalytics()" title="Показать аналитику">Показать аналитику</button>
+            <input type="file" id="csvFileInput" accept=".csv" style="display: none">
+            <button type="button" class="button" onclick="saveCSV()" title="Сохранить CSV">Сохранить CSV</button>
+            <button type="button" class="button" onclick="document.getElementById('csvFileInput').click()" title="Загрузить CSV">Загрузить CSV</button>
+            <button type="button" class="button" onclick="exportToExcel()" title="Экспортировать в Excel">Экспорт в Excel</button>
+            <button type="button" class="button" onclick="exportToJson()" title="Экспортировать в Json">Экспорт в Json</button>
+            <button type="button" class="button" onclick="clearTable()" title="Очистить таблицу">Очистить таблицу</button>
+        </div>
+    </form>
+    <!-- Контейнер для отображения таблицы -->
+    <div id="displaytable"></div>
+    <!-- Контейнер для пагинации -->
+    <div id="pagination__container"></div>
+    <!-- Контейнер для сообщений об ошибках -->
+    <div id="errorMessages"></div>
+    <!-- Сообщение о процессе -->
+    <div id="processMessage">
+        <div class="message-box"></div>
+      </div>
+    <!-- Контейнер для отображения загрузки -->
+    <div id="loadingContainer">
+        <div class="message-box"></div>
+      </div>
+
+    <!-- Модальное окно для аналитики -->
+    <div id="analyticsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Аналитика таблицы</h2>
+            <div id="analyticsContent"></div>
+            <h2>Строки с NaN/пустыми значениями</h2>
+            <div id="nanRowsContainer"></div> <!-- Контейнер для строк с NaN значениями -->
+            <div id="graph" class="chartContainer"></div>
+            <div id="chartContainer"></div>
+            <div id="heatmap" class="chart-container"></div>
+            <div id="results"></div>
+            <div id="chart" class="chartContainer"></div>
+            
+            <!-- Форма ввода для пользователя -->
+            <div id="userInputSection">
+                <h3>Поиск строк по данным</h3>
+                <input type="text" id="userInput"
+                    placeholder="Введите данные через запятую (например, 1, 47, 3, 22, 56)">
+
+                <button onclick="searchRows()">Поиск</button>
+                <div id="searchResults"></div>
+
+                
+            </div>
+            <div>
+                <h3>Примеры для анализа данных:</h3>
+                <button onclick="openJupyterNotebook()">Jupyter Notebook</button>
+                <button onclick="openGoogleColab()">Google Colaboratory</button>
+                <div class="hint" id="hintSection">
+                    <h3>Как использовать файл в Jupyter Notebook или Google Colab:</h3>
+                    <pre id="hintCode"></pre>
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <h3>Навигация</h3>
+            <ul>
+                <li><a href="#analyticsContent">Общая аналитика</a></li>
+                <li><a href="#nanRowsContainer">Строки с пустыми значениями</a></li>
+                <li><a href="#graph">Графики данных</a></li>
+                <li><a href="#heatmap">Тепловая карта корреляции</a></li>
+                <li><a href="#results">Прогноз</a></li>
+                <li><a href="#userInputSection">Поиск строки</a></li>
+                <li><a href="#hintSection">Подсказки</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
+
+
+
